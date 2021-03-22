@@ -216,7 +216,7 @@ cmd_pwd(int nargs, char **args)
 	struct uio ku;
 
 	(void)nargs;
-	(void)args;
+	(void)args;	
 
 	uio_kinit(&iov, &ku, buf, sizeof(buf)-1, 0, UIO_READ);
 	result = vfs_getcwd(&ku);
