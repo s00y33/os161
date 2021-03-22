@@ -36,6 +36,7 @@
 
 
 #include <spinlock.h>
+#include <threadlist.h>
 
 /*
  * Dijkstra-style semaphore.
@@ -115,9 +116,9 @@ bool lock_do_i_hold(struct lock *);
  */
 
 struct cv {
-        char *cv_name;
-        // add what you need here
-        // (don't forget to mark things volatile as needed)
+        char *cv_name; /* name for this condition variable */
+        struct wchan *cv_wchan;
+	struct spinlock cv_lock;
 };
 
 struct cv *cv_create(const char *name);
