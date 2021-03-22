@@ -214,19 +214,20 @@ void
 lock_release(struct lock *lock)
 {
 	KASSERT(lock != NULL);
+	/* only current holder can release */
+	KASSERT(lock->lk_holder == curthread);
 
 	spinlock_acquire(&lock->lk_lock);
 
 	lock->lk_count++;
 	lock->lk_holder = NULL;
 	KASSERT(lock->lk_count > 0);
-	KASSERT(lock->lk_holder == NULL);
 	wchan_wakeone(lock->lk_wchan, &lock->lk_lock);
 
-	spinlock_release(&lock->lk_lock);
-
 	/* Call this (atomically) when the lock is released */
-	HANGMAN_RELEASE(&curthread->t_hangman, &lock->lk_hangman);
+        HANGMAN_RELEASE(&curthread->t_hangman, &lock->lk_hangman);
+
+	spinlock_release(&lock->lk_lock);
 }
 
 bool
