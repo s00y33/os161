@@ -22,4 +22,7 @@
   >`copyin` and `copyout` are defined in [kern/vm/copyinout.c](https://github.com/s00y33/os161/blob/master/kern/vm/copyinout.c). `memmove`, on the other hand, is defined in [common/libc/string/memmove.c](https://github.com/s00y33/os161/blob/master/common/libc/string/memmove.c). `copyin` and `copyout` are necessary for copying data across the kernel-userland boundary. For safety reasons, they both call the [`copycheck`](https://github.com/s00y33/os161/blob/master/kern/vm/copyinout.c#L118) function to ensure that the the block of user memory provided does not overflow to the kernel address space.
 
 7.  What is the purpose of `userptr_t`?
-  >It distinguishes a pointer in the kernel space from a pointer in the user space for type safety. 
+  >It distinguishes a pointer in the kernel space from a pointer in the user space for type safety.
+
+
+### `kern/arch/mips` Traps and System Calls
