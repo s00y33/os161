@@ -37,3 +37,13 @@
 
 4.  What would be required to implement a system call that took more than 4 arguments?
 	>As stated in the comment: "if you run out of registers (which happens quickly with 64-bit values) further arguments must be fetched from the user-level stack, starting at `sp+16` to skip over the slots for the registerized values, with `copyin`".
+
+### Support Code for User Programs
+1.  What is the purpose of the SYSCALL macro?
+	> The `SYSCALL` macro loads the syscall number into v0, the register the kernel expects to find it in, and jump to the shared syscall code.
+
+2.  What is the MIPS instruction that actually triggers a system call? (Answer this by reading the source in this directory, not looking somewhere else.)
+	>The [`syscall`](https://github.com/s00y33/os161/blob/master/userland/lib/libc/arch/mips/syscalls-mips.S#L84) instruction.
+
+3.  OS/161 supports 64 bit values, `lseek` takes and returns a 64 bit offset value. Thus, `lseek` takes a 32 bit file handle (`arg0`), a 64 bit offset (`arg1`), a 32 bit whence (`arg3`), and needs to return a 64 bit offset. In `void syscall(struct trapframe *tf)` where will you find each of the three arguments (in which registers) and how will you return the 64 bit offset?
+	>By the  calling conventions for syscalls, the first four 32-bit arguments are passed in argument registers a0-a3, and 64-bit arguments are passed in *aligned* pairs of registers. In this case, `arg0`, `arg1`, and `arg2` will be in registers a1, a2-a3, and `sp+16` respectively. Since the return value is 64-bit, it will be passed back on registers v0 and v1.
