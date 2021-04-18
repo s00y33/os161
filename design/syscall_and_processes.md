@@ -26,3 +26,14 @@
 
 
 ### `kern/arch/mips` Traps and System Calls
+1.  What is the numerical value of the exception code for a MIPS system call?
+    >[8.](https://github.com/s00y33/os161/blob/master/kern/arch/mips/include/trapframe.h#L89)
+
+2.  How many bytes is an instruction in MIPS? Try to answer this by reading `syscall` carefully, not by looking somewhere else.
+	>[4 bytes](https://github.com/s00y33/os161/blob/master/kern/arch/mips/syscall/syscall.c#L141), the amount the program counter is advanced after syscall returns.
+
+3.  Why do you probably want to change the implementation of `kill_curthread`?
+	>The `kill_curthread` implementation panics on error instead of properly killing the thread.
+
+4.  What would be required to implement a system call that took more than 4 arguments?
+	>As stated in the comment: "if you run out of registers (which happens quickly with 64-bit values) further arguments must be fetched from the user-level stack, starting at `sp+16` to skip over the slots for the registerized values, with `copyin`".
