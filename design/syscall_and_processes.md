@@ -47,3 +47,14 @@
 
 3.  OS/161 supports 64 bit values, `lseek` takes and returns a 64 bit offset value. Thus, `lseek` takes a 32 bit file handle (`arg0`), a 64 bit offset (`arg1`), a 32 bit whence (`arg3`), and needs to return a 64 bit offset. In `void syscall(struct trapframe *tf)` where will you find each of the three arguments (in which registers) and how will you return the 64 bit offset?
 	>By the  calling conventions for syscalls, the first four 32-bit arguments are passed in argument registers a0-a3, and 64-bit arguments are passed in *aligned* pairs of registers. In this case, `arg0`, `arg1`, and `arg2` will be in registers a1, a2-a3, and `sp+16` respectively. Since the return value is 64-bit, it will be passed back on registers v0 and v1.
+
+## Syscall Documentation
+
+### Rule of Thumb
+The user-level interface for system calls are defined in [`userland/include/unistd.h`](https://github.com/s00y33/os161/blob/master/userland/include/unistd.h). In [`kern/include/syscall.h`](https://github.com/s00y33/os161/blob/master/kern/include/syscall.h), we define the prototype of the in-kernel system call handlers. Following the calling conventions for syscalls, a rule thumb when doing so is that the in-kernel implementation should return errno on error, and 0 on success. The actual return value expected by the user-level interface (e.g. count of bytes written in syscall [`write`](https://github.com/s00y33/os161/blob/master/userland/include/unistd.h#L123)) should be returned via an additional argument, where we then pass in the pointer of the [`retval`](https://github.com/s00y33/os161/blob/master/kern/arch/mips/syscall/syscall.c#L100) in the syscall dispatcher. After defining the prototype, we implement the system call `x` in `kern/syscall/x_syscall.c`.
+
+### write
+
+ - libc prototype: `ssize_t write(int fd, const void *buf, size_t buflen);`
+ - handler prototype: `int write(int fd, userptr_t *ubuf, size_t buflen, int *retval);`
+ - TODO: verify type of buflen and retval in kernel
